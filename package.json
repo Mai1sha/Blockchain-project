@@ -1,0 +1,15 @@
+{
+  "name": "team-repo",
+  "version": "1.0.0",
+  "description": "DIDLab blockchain project - Milestone M1 (Week 4 Guided Activity)",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "console:didlab": "hardhat console --network didlab"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "hardhat": "^2.22.0",
+    "dotenv": "^16.4.5"
+  }
+}
