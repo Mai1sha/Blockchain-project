@@ -23,7 +23,7 @@ When users download software, they need to rely on a publisher or a centralized 
 
 ## Activity 4: Trust Boundary Map
 
-
+![Trust Boundary Map](images/trust_boundary_map.png)
 
 ## Activity 5: Qualifiers
 
