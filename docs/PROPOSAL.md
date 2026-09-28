@@ -14,7 +14,7 @@ This dependency can make independent verification difficult when disputes occur 
 | --- | --- |
 | **Stakeholders** | **Registrant/Seller:** registers their digital work.<br><br>**Platform/marketplace:** where registration and selling/buying happen. It manages product listings, sales, and transaction records in the current system. |
 | **Assets** | The digital product (a digital file, such as an image or video), the hash anchored on-chain, and the transfer record. |
-| **Transactions** | The verifier attests that a creator's address is identity-checked. The creator registers the digital product. The buyer gets the product from the creator. Ownership is transferred. |
+| **Transactions** | Registrant/Seller registers the digital product's file commitment. The buyer receives the digital product off-chain. The current recorded owner can initiate an ownership transfer to another blockchain address|
 | **Records** | The seller's account, marketplace listing page, resale history, and possibly a "Verified" badge issued at the platform's discretion. All are held, decided, and controlled by the platform. |
 | **Current intermediary** | The platform/marketplace. Sellers register their products here, and the platform decides whether a seller's identity is valid. It privately holds all sale and transfer history. |
 | **What goes wrong** | A verified badge can only check the legitimacy of the seller's identity. It does not confirm whether the authentic seller created the listed work. A buyer cannot know whether the product is a stolen copy. Ownership and resale history live only in the platform's private database. |
@@ -53,7 +53,7 @@ This dependency can make independent verification difficult when disputes occur 
 
 #### Verifier Check
 
-A third party with no access to any participant's private systems can verify that a digital file matches the file previously registered on-chain and can see its complete ownership history since then. The third party can do so by re-hashing the file and reading the public on-chain records, without trusting the seller's claims or the platform's private database. However, the system does not guarantee that the registered creator is the original creator of the digital product.
+A third party with no access to any participant's private systems can verify that a digital file matches the file previously registered on-chain and can see its recorded ownership history since then. The third party can do so by re-hashing the file and reading the public on-chain records, without trusting the seller's claims or the platform's private database. However, the system does not guarantee that the registered creator is the original creator of the digital product.
 
 ## Part C
 
@@ -109,7 +109,7 @@ The smart contract does not store the digital file itself and does not handle ma
 | Member Name | Number of Commits | Contributions |
 | --- | ---: | --- |
 | Maisha Islam | 8 | Codeveloped PROPOSAL.md. Implemented the initial Solidity contract and test suite, contributed to the repository setup and configuration, and updated the AI record|
-| Sadia Alam | 6 | Codeveloped PROPOSAL.md. Added DIDlab read-only network verification script, performed contract compilation/testing, added D3 evidence, and updated the README>|
+| Sadia Alam | 7 | Codeveloped PROPOSAL.md. Added DIDlab read-only network verification script, performed contract compilation/testing, added D3 evidence, and updated the README>|
 
 ### D3: Compiled Contract and Passing Tests
 
@@ -130,7 +130,7 @@ The smart contract does not store the digital file itself and does not handle ma
 
 ## Part E
 
-### E2: Milestone Plan
+### E1: Milestone Plan
 
 | Gate | Week | What the Team Will Have | Owner |
 | --- | :---: | --- | --- |
@@ -138,3 +138,7 @@ The smart contract does not store the digital file itself and does not handle ma
 | **M3 - Vertical slice and data architecture** | 8 | A working flow to register a file commitment, retrieve its on-chain record, transfer recorded ownership, and verify the file by re-hashing it. | Maisha |
 | **M4 - Security review and feature complete** | 12 | Complete registration, verification, and ownership-transfer features; tests for unauthorized transfers and invalid commitments; and a review of contract access control and key-related risks. | Maisha and Sadia |
 | **M5 - Release candidate and freeze** | 14 | A final tested version with working contract/application integration and documentation. No new features will be added after the freeze. | Maisha and Sadia |
+
+### E2: Team Charter
+Our team charter, including team roles, communication expectations, meeting schedule, and accountability procedures, is available here:
+[View TEAM_CHARTER.md](TEAM_CHARTER.md)
