@@ -118,15 +118,15 @@ The smart contract does not store the digital file itself and does not handle ma
 
 #### Successful Hardhat Compilation
 
-![Terminal output showing successful Hardhat compilation](evidence/hardhat-compile-success.png)
+![Successful Hardhat compilation](evidence/d3_compile.png)
 
 #### Passing Hardhat Tests
 
-![Terminal output showing all Hardhat tests passing](evidence/hardhat-tests-passing.png)
+![Hardhat tests passing](evidence/d3_test.png)
 
 #### DIDLab Chain ID Verification
 
-![Terminal output showing DIDLab chain ID 252501n](evidence/didlab-chain-id.png)
+![DIDLab Chain ID](evidence/d3_chain_id.png)
 
 ## Part E
 
