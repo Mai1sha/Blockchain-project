@@ -1,7 +1,11 @@
 # AI Usage Record
 
-Log every use of an AI assistant on this project: who used it, what for, what was kept vs. rewritten. This is not optional — the course expects it kept current alongside your commits.
 
-| Date | Member | Tool | Prompt / task summary | What was used as-is | What was rewritten or rejected |
-|---|---|---|---|---|---|
-| | | | | | |
+
+| Field | Entry |
+| --- | --- |
+| **Tools used (or "none")** | ChatGPT/Codex , claude|
+| **What you asked for** | Our team took AI's help in breaking down the milestone1 requirements. AI helped us to understand the DIDLab read-only verification activity; organizing and referencing the A3 trust-boundary diagram; developing and refining the B3 suitability verdict and verifier sentence; converting the completed proposal into Markdown; and using Git to add documentation, integrate teammate commits, resolve conflicts, and keep the original proposal separate from the new Milestone 1 proposal. A2, B2, C2, and C3 were completed by Maisha Islam with AI's help and Sadia Alam contributed to A1, B1, C1, D3, B3, E2 and compiled the contract, ran the four tests, gathered the D3 evidence, added the DIDLab verification script, and updated the README. Both of us did the verdict(B3) and milestone planning(E1) together with a solid discussion along AI's help.
+| **What it produced** | The AI produced breakdown of the M1, explanations of the DIDLab verification steps, suggested wording and structure for the B3 verdict and verifier sentence, guidance for storing and referencing the trust-boundary diagram, Markdown formatting for the proposal, and Git commands for staging files, rebasing, resolving conflicts, restoring a previous file version, and pushing changes. |
+| **How you verified it** | The team reviewed the AI-assisted wording against the course requirements and the actual project design. The chain ID was checked directly on DIDLab, the Solidity contract was compiled, and all four tests were run successfully. The team checked file locations and Markdown rendering in VS Code and GitHub, reviewed `git status` and `git log`, and confirmed that `INITIAL_ACT_PROPOSAL.md` retained its original text while `PROPOSAL.md` remained a separate Milestone 1 file. |
+| **What it got wrong** | AI guidance initially contributed to incorrect proposal file placement and an unintended change to the initial proposal. The team identified the problem, restored the original proposal from Git history, and added the new proposal separately. Some suggested image references needed adjustment to match the repository. The team also rejected any implication that blockchain registration proves real-world authorship; the final design only verifies the recorded file commitment and ownership-transfer history. |
