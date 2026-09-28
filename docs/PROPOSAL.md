@@ -108,8 +108,8 @@ The smart contract does not store the digital file itself and does not handle ma
 
 | Member Name | Number of Commits | Contributions |
 | --- | ---: | --- |
-| Maisha Islam |  |  |
-| Sadia Alam |  | Added the DIDLab read-only network verification script for the required chain ID confirmation. |
+| Maisha Islam | 8 | Codeveloped PROPOSAL.md. Implemented the initial Solidity contract and test suite, contributed to the repository setup and configuration, and updated the AI record|
+| Sadia Alam | 6 | Codeveloped PROPOSAL.md. Added DIDlab read-only network verification script, performed contract compilation/testing, added D3 evidence, and updated the README>|
 
 ### D3: Compiled Contract and Passing Tests
 
