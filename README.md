@@ -1,53 +1,74 @@
-# Team Repo — DIDLab Blockchain Project
+# Team MS 
 
-Milestone M1 scaffold from the Week 4 Guided Activity (Suitability Analysis, Solidity Primer, and Project Kickoff).
+This repository contains the Milestone M1 work for our Digital Product Provenance project.
+
+The project explores a blockchain-based approach for allowing users to verify a digital file's integrity and view its recorded ownership-transfer history without relying entirely on a marketplace's private records. The system does not verify the real-world identity or original authorship of the registrant.
 
 ## Structure
 
-```
 contracts/          Solidity contracts
-test/                Hardhat/chai tests
-scripts/             Deployment and utility scripts
+test/               Hardhat/Chai tests
+scripts/            Deployment and utility scripts
 docs/
-  TEAM_CHARTER.md     Roles, communication norms, accountability
-  PROPOSAL.md         Activities 2–7: candidate problems, suitability analysis, verdict
-  architecture/       Diagrams (trust boundary map, etc.)
-  decisions/          One file per architectural decision
-frontend/            Empty for now
+  TEAM_CHARTER.md   Roles, communication norms, and accountability
+  PROPOSAL.md       Milestone M1 project proposal and suitability analysis
+  architecture/     Architecture and trust-boundary diagrams
+  decisions/        Architectural decision records
+  evidence/         Milestone evidence and terminal screenshots
+frontend/           Frontend application work
 .gitignore
-.env.example         Variable names only, no values
-AI_RECORD.md         Log of AI assistant usage on this project
-```
+.env.example        Environment variable names only; no secret values
+AI_RECORD.md        Record of AI assistant usage on this project
 
 ## Setup
 
-```bash
+Install the project dependencies:
+
 npm install
-cp .env.example .env   # fill in your own values locally; .env is gitignored
+
+Create a local environment file:
+
+cp .env.example .env
+
+Fill in any required values locally. The `.env` file is gitignored and must not be committed.
+
+Compile the Solidity contracts:
+
 npx hardhat compile
+
+Run the tests:
+
 npx hardhat test
-```
 
-Expected: `Compiled 1 Solidity file successfully` (or more), and 4 passing tests in `test/ProjectAnchor.test.js`.
+Expected results include successful contract compilation and four passing tests in `test/ProjectAnchor.test.js`.
 
-## Verify the DIDLab connection (read-only, no key required)
+## Verify the DIDLab Connection
 
-```bash
-npx hardhat console --network didlab
-```
+The DIDLab network connection can be checked without a private key:
 
-```js
-(await ethers.provider.getNetwork()).chainId   // expect 252501n
-await ethers.provider.getBlockNumber()          // should increase on repeat calls
-```
+npx hardhat run scripts/check-network.js --network didlab
+
+Expected Chain ID:
+
+252501n
+
+This is a read-only network check and does not require a private key.
 
 ## Contracts
 
-- **SimpleStorage.sol** — minimal example: stores a `uint256`, emits `ValueChanged` on write.
-- **ProjectAnchor.sol** — stores a `bytes32` commitment + timestamp, owner-only writes, rejects an all-zero commitment, emits `CommitmentAnchored`. This is the anchoring pattern: hash off-chain content and store only the hash on chain.
+- **SimpleStorage.sol** — Minimal example contract that stores a `uint256` and emits `ValueChanged` when the value changes.
+- **ProjectAnchor.sol** — Stores a `bytes32` commitment and timestamp. Writes are restricted to the owner, an all-zero commitment is rejected, and successful anchoring emits `CommitmentAnchored`.
 
-No private key is needed this week — no deployment happens yet, only compiling and testing against the in-memory Hardhat network, plus a read-only check against DIDLab.
+`ProjectAnchor.sol` demonstrates the anchoring pattern used by the project: digital content remains off-chain while its cryptographic commitment is stored on-chain.
+
+## Project Scope
+
+The proposed system is designed to support digital-product file commitment registration and recorded ownership transfers.
+
+Digital files, personal information, marketplace listings, and payment information remain off-chain. The project does not claim to verify the original real-world creator of a digital product.
 
 ## Team
 
-See `docs/TEAM_CHARTER.md` for roles and `docs/PROPOSAL.md` for the problem selection and suitability analysis (Activities 2–7).
+See `docs/TEAM_CHARTER.md` for team roles and working agreements.
+
+See `docs/PROPOSAL.md` for the Milestone M1 problem statement, blockchain suitability analysis, technical scope, repository evidence, and milestone plan.
