@@ -22,7 +22,9 @@ This dependency can make independent verification difficult when disputes occur 
 
 ### A3: Trust Boundary Diagram
 
-![Trust boundary diagram](images/trust_boundary_map.png)
+![Trust boundary map](images/trust-boundary-map.jpeg)
+
+
 
 ## Part B
 
