@@ -1,8 +1,8 @@
-# Team MS 
+# TEAM MS
 
-This repository contains the Milestone M1 work for our Digital Product Provenance project.
+This repository contains the Milestone M1 work for our Online Professional-Service Portal project.
 
-The project explores a blockchain-based approach for allowing users to verify a digital file's integrity and view its recorded ownership-transfer history without relying entirely on a marketplace's private records. The system does not verify the real-world identity or original authorship of the registrant.
+The project explores a blockchain-supported professional-service marketplace where clients can engage verified service providers such as tutors, designers, writers, developers, and consultants. The conventional application handles user accounts, provider profiles, KYC, service discovery, communication, and digital deliverables off-chain. Blockchain is used only for the trust-critical layer, including provider-verification status, service-engagement lifecycle records, and escrow/payment state. The system does not claim that a blockchain wallet proves a person's real-world identity. Identity verification is performed off-chain, while the blockchain records the verification status associated with a provider wallet.
 
 ## Structure
 
@@ -57,18 +57,47 @@ This is a read-only network check and does not require a private key.
 ## Contracts
 
 - **SimpleStorage.sol** — Minimal example contract that stores a `uint256` and emits `ValueChanged` when the value changes.
-- **ProjectAnchor.sol** — Stores a `bytes32` commitment and timestamp. Writes are restricted to the owner, an all-zero commitment is rejected, and successful anchoring emits `CommitmentAnchored`.
+- **ProjectAnchor.sol** — Milestone M1 scaffold contract that stores a `bytes32` commitment and timestamp. Writes are restricted to the owner, an all-zero commitment is rejected, and successful anchoring emits `CommitmentAnchored`.
 
-`ProjectAnchor.sol` demonstrates the anchoring pattern used by the project: digital content remains off-chain while its cryptographic commitment is stored on-chain.
+These contracts establish the Solidity, Hardhat, access-control, event, custom-error, testing, and deployment foundation for the project. They are not the final application contracts.
+
+The planned application design includes contracts for provider-verification status and service-engagement/escrow management.
 
 ## Project Scope
 
-The proposed system is designed to support digital-product file commitment registration and recorded ownership transfers.
+The proposed system supports a professional-service marketplace in which clients can engage verified service providers.
 
-Digital files, personal information, marketplace listings, and payment information remain off-chain. The project does not claim to verify the original real-world creator of a digital product.
+### Off-chain
 
-## Team
+The conventional application handles:
 
-See `docs/TEAM_CHARTER.md` for team roles and working agreements.
+- User registration and authentication
+- KYC and identity documents
+- Provider profiles, skills, and service listings
+- Search and discovery
+- Job requirements and proposals
+- Client-provider communications
+- Digital deliverables
+- Reviews and other private application data
 
-See `docs/PROPOSAL.md` for the Milestone M1 problem statement, blockchain suitability analysis, technical scope, repository evidence, and milestone plan.
+### On-chain
+
+The blockchain trust layer is designed to support:
+
+- Provider-verification status
+- Verification 
+- Client and provider wallet authorization
+- Service-engagement creation
+- Engagement lifecycle state
+- Provider acceptance
+- Delivery attestation
+- Client acceptance
+- Engagement completion
+- Escrow funding and payment state
+- Provider payment withdrawal
+
+Personal identity information, KYC documents, messages, job details, and professional deliverables are not stored on-chain.
+
+The blockchain records which authorized wallets performed trust-critical actions, but it does not determine the quality or correctness of professional work and does not independently prove the real-world identity of a wallet holder.
+
+Refunds, engagement cancellation, and dispute resolution are outside the initial project scope.
