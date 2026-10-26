@@ -1,4 +1,4 @@
-
+import BlockchainStatus from "./components/BlockchainStatus";
 export default function Home() {
   const features = [
     {
@@ -235,6 +235,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <BlockchainStatus />
 
       {/* Blockchain Architecture */}
       <section className="bg-white px-6 py-20">
