@@ -1,0 +1,18 @@
+{
+  "network": "didlab",
+  "chainId": 252501,
+  "deployer": "0xAEA4eF37a02A3Db6E2D8D71c68e3941064c59EC1",
+  "admin": "0x8Cd7F85acC2c2D5bc69b448d09DB06664ef4e121",
+  "deployedAt": "2026-10-26T07:42:33.505Z",
+  "contracts": {
+    "ProviderVerify": {
+      "address": "0x74483FA46Fc8ee453E0fE03485254dB6D24B1080",
+      "reused": true
+    },
+    "EngagementEscrow": {
+      "address": "0x3fbeE1dBC1929620cAcdcc3C0DA4F2B60f473C88",
+      "deployBlock": 6682519,
+      "txHash": "0x39ff8edfe087d5f57a4eb5a44bf948042f19c7ca021a71b9583e4307fbf2d194"
+    }
+  }
+}
