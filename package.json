@@ -5,7 +5,9 @@
   "scripts": {
     "compile": "hardhat compile",
     "test": "hardhat test",
-    "console:didlab": "hardhat console --network didlab"
+    "console:didlab": "hardhat console --network didlab",
+    "deploy:local": "hardhat run scripts/deploy.js --network localhost",
+    "deploy:didlab": "hardhat run scripts/deploy.js --network didlab"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
