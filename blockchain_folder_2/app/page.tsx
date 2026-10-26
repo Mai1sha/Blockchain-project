@@ -1,4 +1,7 @@
+import ProviderVerification from "./components/ProviderVerification";
 import BlockchainStatus from "./components/BlockchainStatus";
+import WalletConnect from "./components/WalletConnect";
+import VerifyProviderForm from "./components/VerifyProviderForm";
 export default function Home() {
   const features = [
     {
@@ -236,6 +239,10 @@ export default function Home() {
         </div>
       </section>
       <BlockchainStatus />
+      <WalletConnect />
+      <ProviderVerification />
+      <VerifyProviderForm />
+
 
       {/* Blockchain Architecture */}
       <section className="bg-white px-6 py-20">
