@@ -14,6 +14,13 @@ import {
 
 import abi from "../../abi.json";
 
+// MetaMask injects an EIP-1193 provider into the browser window.
+declare global {
+  interface Window {
+    ethereum?: Parameters<typeof custom>[0];
+  }
+}
+
 const didlab = defineChain({
   id: 252501,
   name: "DIDLab",
@@ -199,102 +206,7 @@ export default function VerifyProviderForm() {
     }
   } finally {
     setLoading(false);
-  }
-}async function submitVerification() {
-  if (!isAddress(provider)) {
-    setStatus("❌ Please enter a valid provider wallet address.");
-    return;
-  }
-
-  if (!window.ethereum) {
-    setStatus("❌ MetaMask is not installed.");
-    return;
-  }
-
-  setLoading(true);
-  setStatus("⏳ Preparing verification transaction...");
-
-  try {
-    const walletClient = createWalletClient({
-      chain: didlab,
-      transport: custom(window.ethereum),
-    });
-
-    const [account] = await walletClient.requestAddresses();
-
-    if (!account) {
-      setStatus("❌ No wallet account selected.");
-      return;
-    }
-
-    const chainId = await walletClient.getChainId();
-
-    if (chainId !== 252501) {
-      setStatus("❌ Wrong network. Please switch to DIDLab.");
-      return;
-    }
-
-    const expiresAt = BigInt(
-      Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60
-    );
-
-    const credentialHash = keccak256(
-      stringToHex("serviceportal-demo-credential")
-    );
-
-    // 1. Simulate transaction before sending
-    setStatus("⏳ Simulating transaction...");
-
-    const { request } = await publicClient.simulateContract({
-      address: CONTRACT_ADDRESS,
-      abi,
-      functionName: "verifyProvider",
-      args: [provider, expiresAt, credentialHash],
-      account,
-    });
-
-    // 2. Request MetaMask approval
-    setStatus("🦊 Waiting for MetaMask approval...");
-
-    const hash = await walletClient.writeContract(request);
-
-    // 3. Transaction submitted
-    setStatus(`📤 Transaction submitted: ${hash}. Waiting for confirmation...`);
-
-    // 4. Wait for blockchain confirmation
-    const receipt = await publicClient.waitForTransactionReceipt({
-      hash,
-    });
-
-    if (receipt.status === "success") {
-      setStatus(`✅ Verification confirmed! Transaction hash: ${hash}`);
-    } else {
-      setStatus(`❌ Transaction reverted. Transaction hash: ${hash}`);
-    }
-  } catch (error: unknown) {
-    console.error("Verification transaction error:", error);
-
-    // MetaMask rejects commonly use error code 4001.
-    const err = error as {
-      code?: number;
-      cause?: { code?: number };
-      shortMessage?: string;
-      message?: string;
-    };
-
-    if (err.code === 4001 || err.cause?.code === 4001) {
-      setStatus("🚫 Transaction rejected by user in MetaMask.");
-    } else {
-      setStatus(
-        `❌ Transaction failed: ${
-          err.shortMessage || err.message || "Unknown error"
-        }`
-      );
-    }
-  } finally {
-    setLoading(false);
-  }
-}
+  }}
 
   return (
     <div className="rounded-xl border border-purple-300 bg-white p-6 shadow-md text-gray-900">
