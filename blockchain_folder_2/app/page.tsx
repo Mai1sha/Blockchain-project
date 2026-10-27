@@ -2,6 +2,8 @@ import ProviderVerification from "./components/ProviderVerification";
 import BlockchainStatus from "./components/BlockchainStatus";
 import WalletConnect from "./components/WalletConnect";
 import VerifyProviderForm from "./components/VerifyProviderForm";
+import EngagementStatus from "./components/EngagementStatus";
+import CreateEngagementForm from "./components/CreateEngagementForm";
 export default function Home() {
   const features = [
     {
@@ -242,6 +244,8 @@ export default function Home() {
       <WalletConnect />
       <ProviderVerification />
       <VerifyProviderForm />
+      <EngagementStatus />
+      <CreateEngagementForm />
 
 
       {/* Blockchain Architecture */}
