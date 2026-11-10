@@ -9,8 +9,8 @@ Cumulative report, maintained across checkpoints. This snapshot: **Checkpoint 2 
 | Network | DIDLab, chain ID 252501 |
 | Repository | https://github.com/Mai1sha/Blockchain-project |
 | Official team deployment URL | https://teamms.didlab.org |
-| Integrated build (escrow + provider features) | https://maisha.didlab.org |
-| Graded Git commit | `[INSERT FINAL COMMIT HASH]` |
+| Individual test deployment (Lab 1) | https://maisha.didlab.org |
+| Graded Git commit | The commit tagged `cp2` (full hash submitted on Canvas) |
 
 ---
 
@@ -81,7 +81,7 @@ The project passes all qualifiers and no disqualifier applies. It is suitable be
 
 | Layer | Components and data flow | CP2 status |
 | --- | --- | --- |
-| Browser / Next.js ServicePortal | MetaMask → DIDLab chain 252501. Read path: RPC → `ProviderVerify.isVerifiedProvider` and `EngagementEscrow.lastEngagementId` / `getEngagement` → rendered status. Write paths: verifier wallet → `ProviderVerify.verifyProvider`; client wallet → `EngagementEscrow.createEngagement` → `EngagementCreated` event → panel refresh. | Live. Provider features on the team domain; provider + escrow features together at maisha.didlab.org |
+| Browser / Next.js ServicePortal | MetaMask → DIDLab chain 252501. Read path: RPC → `ProviderVerify.isVerifiedProvider` and `EngagementEscrow.lastEngagementId` / `getEngagement` → rendered status. Write paths: verifier wallet → `ProviderVerify.verifyProvider`; client wallet → `EngagementEscrow.createEngagement` → `EngagementCreated` event → panel refresh. | Live at https://teamms.didlab.org with provider and escrow features together |
 | DIDLab smart contracts | `ProviderVerify.sol`; `EngagementEscrow.sol` (checks ProviderVerify through `IProviderRegistry`) | Both deployed (§6) |
 | Hosting | Next.js static export served from `/srv/www`; Express server (`frontend/server.js`, bound to `process.env.PORT`) in `/srv/app` | Live |
 | Off-chain platform | KYC documents, profiles, messages, specifications, deliverables | Planned; not claimed live |
@@ -157,7 +157,7 @@ Full records with timestamps: `docs/evidence/CP2_serviceportal_evidence.md`.
 | Escrow status panel | Working | `EngagementStatus.tsx` reads `lastEngagementId` / `getEngagement` and refreshes on `EngagementCreated` |
 | Create engagement (client write) | Working | `CreateEngagementForm.tsx`; engagements #1–#5 (§6) |
 | Transaction states | Working | Pending, confirmed, user-rejected, simulation revert (`ProviderNotVerified`, `InvalidParties`), on-chain revert — screenshots in `docs/evidence/lab1_*` |
-| Unified team-domain frontend | Partly | Provider + escrow features are combined in one Next.js app (live at maisha.didlab.org); the team domain still serves the static CP1 project page (§13) |
+| Unified team-domain frontend | Yes | Provider + escrow features in one Next.js app, live at https://teamms.didlab.org as of 2026-11-10 (§13) |
 | Provider accept / deliver / client accept / withdraw in the UI | Not yet | Contract functions exist and are tested; UI planned for CP3 |
 
 **Read path:** a visitor opens the site, which calls DIDLab RPC and reads `ProviderVerify.isVerifiedProvider(provider)` and `EngagementEscrow.getEngagement(lastEngagementId)` on chain 252501, then renders the result. Nothing is hardcoded; the escrow panel changes only when the chain emits `EngagementCreated`.
@@ -212,7 +212,7 @@ Commits since Checkpoint 1 (from 2026-10-05, `git log`): **Maisha Islam 10**, **
 
 | Risk / blocker | Description |
 | --- | --- |
-| Team domain behind | As of 2026-11-08, https://teamms.didlab.org still serves the static CP1 project page, with no wallet connection or contract reads. The integrated build with the escrow panel is live at https://maisha.didlab.org. The team domain must be redeployed from the current commit. |
+| Team domain was behind (resolved) | Until at least 2026-11-08, https://teamms.didlab.org still served the static CP1 project page, with no wallet connection or contract reads; the integrated build was only on https://maisha.didlab.org. It was redeployed by 2026-11-10 by uploading the build to `/srv/www`. The cause was that the two of us deployed separately, with no shared deploy step. The steps are now in the README. |
 | Escrow UI incomplete | Only `createEngagement` has a UI. Accept, deliver, approve and withdraw exist in the contract and tests but not in the frontend. |
 | Hosting surprises | DIDLab starts `/srv/app/index.js` (not `server.js`) and serves the root from `/srv/www`; the app crashed until both were found from the logs. These steps still need to go into the README for whoever redeploys. |
 | Off-chain trust | KYC remains dependent on the authorized verifier. The chain records who attested, not whether the identity evidence is true. |
@@ -222,7 +222,7 @@ Commits since Checkpoint 1 (from 2026-10-05, `git log`): **Maisha Islam 10**, **
 
 Checkpoint 3 — functional end-to-end use by someone outside the team.
 
-1. Redeploy the integrated app to the team domain and keep a single deployment.
+1. Keep the team domain as the single deployment, and redeploy it from the README steps after every frontend change.
 2. Add provider accept, deliver, client approve and withdraw to the UI; demonstrate a full engagement with on-chain evidence.
 3. Exercise cancellation/refund, wrong network, no wallet, user rejection, and revert paths from a clean browser profile.
 4. Security and privacy review covering at least three vulnerability classes against our own code.
@@ -245,5 +245,6 @@ Checkpoint 3 — functional end-to-end use by someone outside the team.
 | 8 | Express server and DIDLab hosting setup (`frontend/`) | Reproducible deployment |
 | 9 | 44 passing tests | Authorized and unauthorized paths, invalid inputs, deadlines, refunds, reentrancy |
 | 10 | Deployment scripts and manifest committed | Reproducibility and auditability |
+| 11 | Team domain redeployed with the integrated build (by 2026-11-10); README updated with addresses, env vars and hosting steps | The graded URL now shows the working DApp, and someone else can rebuild it |
 
-**Scope honesty:** both contracts are deployed and both core features have working frontends, but the team domain still serves the static CP1 page, and the later escrow steps have no UI yet. The privacy boundary and marketplace problem are unchanged from CP1.
+**Scope honesty:** both contracts are deployed and both core features have working frontends, and both are live on the team domain. The team domain was updated late (by 2026-11-10; see §13), and the later escrow steps have no UI yet. The privacy boundary and marketplace problem are unchanged from CP1.
