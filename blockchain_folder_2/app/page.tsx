@@ -4,6 +4,8 @@ import WalletConnect from "./components/WalletConnect";
 import VerifyProviderForm from "./components/VerifyProviderForm";
 import EngagementStatus from "./components/EngagementStatus";
 import CreateEngagementForm from "./components/CreateEngagementForm";
+import EngagementActions from "./components/EngagementActions";
+import NetworkBanner from "./components/NetworkBanner";
 export default function Home() {
   const features = [
     {
@@ -57,6 +59,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-slate-50 text-slate-900">
+      <NetworkBanner />
       {/* Navigation */}
       <header className="border-b border-slate-200 bg-white">
         <nav className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-5">
@@ -240,12 +243,26 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <BlockchainStatus />
-      <WalletConnect />
-      <ProviderVerification />
-      <VerifyProviderForm />
-      <EngagementStatus />
-      <CreateEngagementForm />
+      {/* Live DApp */}
+      <section id="app" className="px-6 py-16">
+        <div className="mx-auto max-w-4xl space-y-6">
+          <div className="text-center">
+            <h2 className="mb-3 text-3xl font-bold">Use the DApp</h2>
+            <p className="mx-auto max-w-2xl text-slate-600">
+              Connect a funded DIDLab wallet. Clients create and fund an engagement; the provider accepts and
+              submits the delivery; the client accepts it; the provider withdraws the payment. Every step is a
+              transaction on chain 252501.
+            </p>
+          </div>
+          <BlockchainStatus />
+          <WalletConnect />
+          <ProviderVerification />
+          <VerifyProviderForm />
+          <CreateEngagementForm />
+          <EngagementActions />
+          <EngagementStatus />
+        </div>
+      </section>
 
 
       {/* Blockchain Architecture */}

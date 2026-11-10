@@ -1,13 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createPublicClient, formatEther, http } from "viem";
-import escrowAbi from "../../escrowAbi.json";
+import { formatEther, type Log } from "viem";
 import { ESCROW_ADDRESS } from "../escrowConfig";
-
-const publicClient = createPublicClient({
-  transport: http("https://eth.didlab.org"),
-});
+import { publicClient } from "../lib/chain";
+import { decodeEscrowLog, describeEvent, escrowAbi } from "../lib/escrow";
 
 // Matches the Status enum in EngagementEscrow.sol
 const STATUS_NAMES = [
@@ -78,22 +75,22 @@ export default function EngagementStatus() {
   useEffect(() => {
     loadState();
 
-    // The display only changes when the chain says so: a new
-    // EngagementCreated event triggers a fresh read.
+    // The display only changes when the chain says so: any escrow
+    // event (created, accepted, delivered, completed, cancelled,
+    // withdrawn) triggers a fresh read.
     const unwatch = publicClient.watchContractEvent({
       address: ESCROW_ADDRESS,
       abi: escrowAbi,
-      eventName: "EngagementCreated",
       onLogs: (logs) => {
         if (logs.length === 0) return;
 
         const lines = logs.map((log) => {
-          const args = (log as unknown as {
-            args: { engagementId: bigint; amount: bigint };
-          }).args;
-          return `EngagementCreated #${args.engagementId} · ${formatEther(
-            args.amount
-          )} TRUST · block ${log.blockNumber}`;
+          const decoded = decodeEscrowLog(log as unknown as Log);
+          if (!decoded) return `Escrow event · block ${log.blockNumber}`;
+          return `${decoded.name} #${decoded.engagementId} · ${describeEvent(
+            decoded,
+            formatEther
+          )} · block ${log.blockNumber}`;
         });
 
         setEvents((prev) => [...lines, ...prev].slice(0, 10));
@@ -157,7 +154,7 @@ export default function EngagementStatus() {
       <h3 className="mt-6 mb-2 font-semibold">Live Events</h3>
       {events.length === 0 ? (
         <p className="text-sm text-gray-600">
-          Waiting for new EngagementCreated events...
+          Listening for new escrow events...
         </p>
       ) : (
         <ul className="list-disc space-y-1 pl-5 text-sm">

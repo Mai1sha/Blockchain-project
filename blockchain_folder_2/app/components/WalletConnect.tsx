@@ -1,110 +1,63 @@
 "use client";
 
 import { useState } from "react";
-import {
-  createWalletClient,
-  custom,
-  defineChain,
-} from "viem";
+import { connectWallet, switchToDidlab, useWallet } from "../lib/useWallet";
 
-const didlab = defineChain({
-  id: 252501,
-  name: "DIDLab",
-  nativeCurrency: {
-    name: "TRUST",
-    symbol: "TRUST",
-    decimals: 18,
-  },
-  rpcUrls: {
-    default: {
-      http: ["https://eth.didlab.org"],
-    },
-  },
-  blockExplorers: {
-    default: {
-      name: "DIDLab Explorer",
-      url: "https://explorer.didlab.org",
-    },
-  },
-});
-
+// Wallet card: connect, switch network, and show the connected account.
 export default function WalletConnect() {
-  const [account, setAccount] = useState("");
-  const [status, setStatus] = useState("Wallet not connected");
+  const wallet = useWallet();
+  const [working, setWorking] = useState(false);
+  const [switchError, setSwitchError] = useState("");
 
-  async function connectWallet() {
-    const ethereum = (
-      window as Window & { ethereum?: any }
-    ).ethereum;
+  async function onConnect() {
+    setWorking(true);
+    await connectWallet();
+    setWorking(false);
+  }
 
-    if (!ethereum) {
-      setStatus("MetaMask not detected");
-      return;
-    }
-
+  async function onSwitch() {
+    setSwitchError("");
+    setWorking(true);
     try {
-      const walletClient = createWalletClient({
-        chain: didlab,
-        transport: custom(ethereum),
-      });
-
-      const [address] = await walletClient.requestAddresses();
-
-      const chainId = await walletClient.getChainId();
-
-      if (chainId !== 252501) {
-        setStatus("Wrong network. Switching to DIDLab...");
-
-        try {
-          await walletClient.switchChain({ id: 252501 });
-        } catch (error: any) {
-          if (error.code === 4902) {
-            await walletClient.addChain({ chain: didlab });
-            await walletClient.switchChain({ id: 252501 });
-          } else {
-            setStatus("Please switch to DIDLab network");
-            return;
-          }
-        }
-      }
-
-      const confirmedChainId = await walletClient.getChainId();
-
-      if (confirmedChainId !== 252501) {
-        setStatus("Wrong network. Please select DIDLab.");
-        return;
-      }
-
-      setAccount(address);
-      setStatus("Connected to DIDLab");
-    } catch (error) {
-      console.error(error);
-      setStatus("Wallet connection failed or was rejected");
+      await switchToDidlab();
+    } catch {
+      setSwitchError("The network switch was rejected or failed. Select DIDLab in MetaMask manually.");
+    } finally {
+      setWorking(false);
     }
   }
 
+  let status = "Checking for a wallet…";
+  if (wallet.ready && !wallet.hasWallet) status = "MetaMask not detected";
+  else if (wallet.hasWallet && !wallet.account) status = "Wallet not connected";
+  else if (wallet.account && !wallet.onDidlab) status = `Wrong network (chain ${wallet.chainId ?? "unknown"})`;
+  else if (wallet.account && wallet.onDidlab) status = "Connected to DIDLab";
+
   return (
-    <div className="rounded-xl border border-purple-300 bg-white p-6 shadow-md text-gray-900">
-      <h2 className="text-xl font-bold mb-4">
-        MetaMask Wallet
-      </h2>
+      <div className="rounded-xl border border-purple-300 bg-white p-6 text-gray-900 shadow-md">
+        <h2 className="mb-4 text-xl font-bold">MetaMask Wallet</h2>
 
-      <button
-        onClick={connectWallet}
-        className="rounded-lg bg-purple-600 px-5 py-3 text-white hover:bg-purple-700"
-      >
-        Connect MetaMask
-      </button>
+        {wallet.hasWallet && !wallet.account && (
+          <button onClick={onConnect} disabled={working} className="rounded-lg bg-purple-600 px-5 py-3 text-white hover:bg-purple-700 disabled:opacity-50">
+            {working ? "Connecting…" : "Connect MetaMask"}
+          </button>
+        )}
+        {wallet.account && !wallet.onDidlab && (
+          <button onClick={onSwitch} disabled={working} className="rounded-lg bg-red-600 px-5 py-3 text-white hover:bg-red-700 disabled:opacity-50">
+            Switch to DIDLab
+          </button>
+        )}
 
-      <p className="mt-4">
-        <strong>Status:</strong> {status}
-      </p>
-
-      {account && (
-        <p className="mt-2 break-all">
-          <strong>Wallet Address:</strong> {account}
+        <p className="mt-4">
+          <strong>Status:</strong> {status}
         </p>
-      )}
-    </div>
+        {wallet.account && (
+          <p className="mt-2 break-all">
+            <strong>Wallet Address:</strong> {wallet.account}
+          </p>
+        )}
+        {wallet.error && <p className="mt-2 text-sm text-red-600">{wallet.error}</p>}
+        {switchError && <p className="mt-2 text-sm text-red-600">{switchError}</p>}
+      </div>
   );
 }
