@@ -73,7 +73,8 @@ export default function EngagementStatus() {
   }
 
   useEffect(() => {
-    loadState();
+    // First read is async; state is only set once the RPC answers.
+    Promise.resolve().then(loadState);
 
     // The display only changes when the chain says so: any escrow
     // event (created, accepted, delivered, completed, cancelled,

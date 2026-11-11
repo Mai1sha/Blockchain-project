@@ -80,7 +80,7 @@ export function decodeEscrowLog(log: Log): DecodedEvent | null {
     const decoded = decodeEventLog({ abi: escrowAbi, data: log.data, topics: log.topics });
     const args = (decoded.args ?? {}) as Record<string, unknown>;
     return {
-      name: decoded.eventName as string,
+      name: String(decoded.eventName),
       engagementId: args.engagementId as bigint,
       args,
       blockNumber: log.blockNumber,

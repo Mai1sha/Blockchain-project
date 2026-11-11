@@ -193,33 +193,34 @@ export default function EngagementActions() {
     }
   }, []);
 
+  const select = useCallback(
+    (target: bigint) => {
+      setId(target);
+      setIdInput(target.toString());
+      load(target);
+    },
+    [load]
+  );
+
   // Start on the newest engagement.
   useEffect(() => {
     readLastId()
       .then((last) => {
         setLastId(last);
-        if (last > BigInt(0)) {
-          setId(last);
-          setIdInput(last.toString());
-        }
+        if (last > BigInt(0)) select(last);
       })
       .catch(() => setLoadError("Could not reach the DIDLab RPC to read the escrow contract."));
-  }, []);
-
-  useEffect(() => {
-    if (id !== null) load(id);
-  }, [id, load]);
+  }, [select]);
 
   // Jump to an engagement created elsewhere on the page.
   useEffect(() => {
     const onSelect = (ev: Event) => {
-      const newId = (ev as CustomEvent<bigint>).detail;
-      setId(newId);
-      setIdInput(newId.toString());
+      readLastId().then(setLastId).catch(() => {});
+      select((ev as CustomEvent<bigint>).detail);
     };
     window.addEventListener("engagement:select", onSelect);
     return () => window.removeEventListener("engagement:select", onSelect);
-  }, []);
+  }, [select]);
 
   // Refresh from chain whenever any escrow event fires.
   useEffect(() => {
@@ -260,7 +261,7 @@ export default function EngagementActions() {
       setLoadError("Enter a whole-number engagement ID (1 or higher).");
       return;
     }
-    setId(BigInt(raw.trim()));
+    select(BigInt(raw.trim()));
   }
 
   async function run(action: Action) {
