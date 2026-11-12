@@ -1,3 +1,4 @@
+
 import ProviderVerification from "./components/ProviderVerification";
 import BlockchainStatus from "./components/BlockchainStatus";
 import WalletConnect from "./components/WalletConnect";
@@ -7,6 +8,7 @@ import EngagementStatus from "./components/EngagementStatus";
 import CreateEngagementForm from "./components/CreateEngagementForm";
 import EngagementActions from "./components/EngagementActions";
 import NetworkBanner from "./components/NetworkBanner";
+import EngagementSpecification from "./components/EngagementSpecification";
 export default function Home() {
   const features = [
     {
@@ -263,6 +265,7 @@ export default function Home() {
           <CreateEngagementForm />
           <EngagementActions />
           <EngagementStatus />
+          <EngagementSpecification />
         </div>
       </section>
 
