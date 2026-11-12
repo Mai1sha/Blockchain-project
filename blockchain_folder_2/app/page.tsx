@@ -1,6 +1,7 @@
 import ProviderVerification from "./components/ProviderVerification";
 import BlockchainStatus from "./components/BlockchainStatus";
 import WalletConnect from "./components/WalletConnect";
+import WalletAuthTest from "./components/WalletAuthTest";
 import VerifyProviderForm from "./components/VerifyProviderForm";
 import EngagementStatus from "./components/EngagementStatus";
 import CreateEngagementForm from "./components/CreateEngagementForm";
@@ -256,6 +257,7 @@ export default function Home() {
           </div>
           <BlockchainStatus />
           <WalletConnect />
+          <WalletAuthTest />
           <ProviderVerification />
           <VerifyProviderForm />
           <CreateEngagementForm />

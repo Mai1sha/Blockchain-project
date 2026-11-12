@@ -92,15 +92,50 @@ export function decodeEscrowLog(log: Log): DecodedEvent | null {
 }
 
 /** Every escrow event for one engagement (engagementId is indexed in all events). */
+
+/** Read escrow events in small batches to respect DIDLab RPC limits. */
+
 export async function readHistory(id: bigint): Promise<DecodedEvent[]> {
-  const logs = await publicClient.getLogs({
-    address: ESCROW,
-    fromBlock: ESCROW_DEPLOY_BLOCK,
-    toBlock: "latest",
-    topics: [null, `0x${id.toString(16).padStart(64, "0")}`],
-  } as Parameters<typeof publicClient.getLogs>[0]);
-  return logs.map((l) => decodeEscrowLog(l as Log)).filter((e): e is DecodedEvent => e !== null);
+  const latestBlock = await publicClient.getBlockNumber();
+  const batchSize = BigInt(500);
+  const events: DecodedEvent[] = [];
+
+  const idTopic = `0x${id.toString(16).padStart(64, "0")}`;
+
+  for (
+    let fromBlock = ESCROW_DEPLOY_BLOCK;
+    fromBlock <= latestBlock;
+    fromBlock += batchSize
+  ) {
+    const toBlock =
+      fromBlock + batchSize - BigInt(1) > latestBlock
+        ? latestBlock
+        : fromBlock + batchSize - BigInt(1);
+
+    const logs = await publicClient.getLogs({
+      address: ESCROW,
+      fromBlock,
+      toBlock,
+      topics: [null, idTopic],
+    } as Parameters<typeof publicClient.getLogs>[0]);
+
+    for (const log of logs) {
+      const event = decodeEscrowLog(log as Log);
+
+      if (event && event.engagementId === id) {
+        events.push(event);
+      }
+    }
+  }
+
+  return events.sort((a, b) => {
+    const blockA = a.blockNumber ?? BigInt(0);
+    const blockB = b.blockNumber ?? BigInt(0);
+
+    return blockA < blockB ? -1 : blockA > blockB ? 1 : 0;
+  });
 }
+
 
 /** One-line, human description of an escrow event. */
 export function describeEvent(e: DecodedEvent, fmtEther: (v: bigint) => string): string {
