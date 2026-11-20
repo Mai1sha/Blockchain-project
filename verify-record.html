@@ -1,0 +1,141 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ServicePortal Record Verification</title>
+</head>
+<body>
+  <h2>ServicePortal — Client Verification</h2>
+  <p>Connect MetaMask Account 2 to verify the anchored record.</p>
+
+  <button id="connect">Connect Wallet</button>
+  <button id="verify" disabled>Verify Record</button>
+
+  <pre id="status">Not connected</pre>
+
+  <script type="module">
+    import {
+      BrowserProvider,
+      Contract
+    } from "https://esm.sh/ethers@6.13.5";
+
+    const CONTRACT =
+      "0x6d10ea2912505E6e00C76510bACCFa5819d57C10";
+
+    const RECORD =
+      "0x06a3316db8d7fe49e790aee8bf99e39be5df226c87a4fe85cf1858315b059351";
+
+    const CLIENT =
+      "0x55133ee946875C12C1bD7232c5cF6697AA724D61";
+
+    const ABI = [
+  "function verify(bytes32 recordId) external",
+  "function CLIENT() view returns (bytes32)",
+  "function hasRole(bytes32 role, address account) view returns (bool)",
+  "function get(bytes32 recordId) view returns ((bytes32 digest, string cid, address submitter, uint64 submittedAt, address verifier, uint64 verifiedAt))"
+];
+    const status = document.getElementById("status");
+    const connectButton = document.getElementById("connect");
+    const verifyButton = document.getElementById("verify");
+
+    let contract;
+
+    connectButton.onclick = async () => {
+      try {
+        if (!window.ethereum) {
+          throw new Error("MetaMask is not available");
+        }
+
+        const provider = new BrowserProvider(window.ethereum);
+        await provider.send("eth_requestAccounts", []);
+
+        const network = await provider.getNetwork();
+        if (network.chainId !== 252501n) {
+          throw new Error("Switch MetaMask to DIDLab chain 252501");
+        }
+
+        const signer = await provider.getSigner();
+        const wallet = await signer.getAddress();
+
+        if (wallet.toLowerCase() !== CLIENT.toLowerCase()) {
+          throw new Error("Please select MetaMask Account 2");
+        }
+
+        contract = new Contract(CONTRACT, ABI, signer);
+
+        const role = await contract.CLIENT();
+        const allowed = await contract.hasRole(role, wallet);
+
+        if (!allowed) {
+          throw new Error("This wallet does not have the CLIENT role");
+        }
+
+        const record = await contract.get(RECORD);
+
+        if (record.verifiedAt !== 0n) {
+          throw new Error("This record is already verified");
+        }
+
+        const gatewayUrl =
+  "https://gateway.didlab.org/ipfs/" + record.cid;
+
+status.textContent = "Checking encrypted file integrity...";
+
+const response = await fetch(gatewayUrl);
+
+if (!response.ok) {
+  throw new Error("Unable to retrieve encrypted file");
+}
+
+const ciphertext = await response.arrayBuffer();
+
+const calculatedHash = Array.from(
+  new Uint8Array(
+    await crypto.subtle.digest("SHA-256", ciphertext)
+  )
+).map(byte => byte.toString(16).padStart(2, "0")).join("");
+
+const expectedHash = record.digest.slice(2).toLowerCase();
+
+if (calculatedHash !== expectedHash) {
+  throw new Error("SHA-256 mismatch! Verification blocked.");
+}
+
+status.textContent =
+  "Integrity check PASSED!\n" +
+  "Retrieved bytes: " + ciphertext.byteLength + "\n" +
+  "Calculated SHA-256: 0x" + calculatedHash + "\n" +
+  "On-chain SHA-256: " + record.digest;
+        verifyButton.disabled = false;
+      } catch (error) {
+        verifyButton.disabled = true;
+        status.textContent = "Error: " + error.message;
+      }
+    };
+
+    verifyButton.onclick = async () => {
+      try {
+        verifyButton.disabled = true;
+        status.textContent = "Confirm the transaction in MetaMask...";
+
+        const tx = await contract.verify(RECORD);
+
+        status.textContent = "Pending transaction:\n" + tx.hash;
+
+        const receipt = await tx.wait();
+
+        status.textContent =
+          "Verification confirmed!\n" +
+          "Transaction: " + receipt.hash + "\n" +
+          "Block: " + receipt.blockNumber + "\n" +
+          "Status: " + receipt.status;
+      } catch (error) {
+        status.textContent = "Error: " + error.message;
+        verifyButton.disabled = false;
+      }
+    };
+  </script>
+</body>
+</html>
