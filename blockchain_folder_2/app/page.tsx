@@ -6,6 +6,8 @@ import EngagementStatus from "./components/EngagementStatus";
 import CreateEngagementForm from "./components/CreateEngagementForm";
 import EngagementActions from "./components/EngagementActions";
 import NetworkBanner from "./components/NetworkBanner";
+import ArtifactVerificationPage from "./artifact-verification/page";
+
 export default function Home() {
   const features = [
     {
@@ -308,6 +310,11 @@ export default function Home() {
           </p>
         </div>
       </section>
+
+      {/* Assignment 2 — Artifact Verification */}
+<section id="artifact-verification" className="px-6 py-12">
+  <ArtifactVerificationPage />
+</section>
 
       {/* Team */}
       <section
