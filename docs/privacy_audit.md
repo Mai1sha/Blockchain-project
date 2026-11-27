@@ -21,6 +21,33 @@ The `ServiceRegistry.sol` smart contract records commitments to encrypted delive
 
 The contract also exposes role assignments through `hasRole()` and emits events for role grants, role revocations, record anchoring, and verification.
 
+
+### Field-by-Field Privacy Verdicts
+
+The following assessment covers the data written to contract storage, included in transaction calldata, or emitted in blockchain events. All on-chain data and transaction metadata should be treated as publicly observable.
+
+| Field or value | Location | Could identify or link a person? | Privacy verdict |
+|---|---|---|---|
+| `recordId` | Storage, `anchor()` calldata, `RecordAnchored` and `RecordVerified` events | Indirectly, if associated with a known person or transaction | Acceptable with safeguards: generate a cryptographically random identifier, never derive it from personal information |
+| `digest` | Storage, `anchor()` calldata, `RecordAnchored` event | Potentially; a known file can be compared against its digest | Acceptable with safeguards: hash encrypted ciphertext, not sensitive plaintext |
+| `cid` | Storage, `anchor()` calldata, `RecordAnchored` event | Potentially; reveals a link to the encrypted artifact | Acceptable with safeguards: encrypt before uploading and protect decryption keys |
+| `submitter` | Storage, `RecordAnchored` event, transaction sender | Yes, indirectly; wallet activity can be linked to an identity | Privacy-sensitive but necessary: disclose that wallet participation is public |
+| `submittedAt` | Storage and related transaction/block metadata | Indirectly; reveals timing and supports activity correlation | Acceptable with safeguards: retain only required timestamps |
+| `verifier` | Storage, `RecordVerified` event, transaction sender | Yes, indirectly; reveals the verifying wallet and its association with a record | Privacy-sensitive but necessary: avoid linking wallets to personal identifiers on-chain |
+| `verifiedAt` | Storage and related transaction/block metadata | Indirectly; reveals when verification occurred | Acceptable with safeguards: store only the timestamp needed for auditability |
+| Role identifier (`ADMIN`, `PROVIDER`, `CLIENT`) | Role-mapping storage, role-management calldata and events | Indirectly; reveals a wallet's authorization or participation category | Acceptable with safeguards: use roles rather than public personal-identity records |
+| Role holder address | Role-mapping storage, grant/revoke calldata and events | Yes, indirectly; may reveal a provider, client, or administrator | Privacy-sensitive: do not publish real-world identity mappings |
+| Role administrator/transaction sender | Transaction metadata and role-management events where emitted | Yes, indirectly; reveals who performed administrative actions | Privacy-sensitive but necessary for accountability |
+| Role assignment or revocation action | `grantRole()` / `revokeRole()` calldata and corresponding events | Indirectly; reveals authorization history | Acceptable with safeguards: avoid including personal information in event data |
+
+### Overall Privacy Verdict
+
+**Acceptable with safeguards for this demonstration.** ServicePortal stores public commitments and authorization metadata rather than plaintext deliverables or KYC information. However, wallet addresses, timestamps, role assignments, and IPFS references can reveal relationships or activity patterns.
+
+Encryption protects artifact contents only while the encryption keys remain secure. Blockchain integrity checks establish correspondence with a recorded ciphertext digest; they do not independently prove the deliverable's authorship, correctness, or quality.
+
+Personal identifiers, plaintext documents, encryption keys, and confidential service details should remain off-chain.
+
 ## 3. Off-Chain Data
 
 The following information should remain outside the blockchain:
